@@ -16,11 +16,113 @@
 
 <body>
   <h3>
-    Graph 1
+    Graph 1: Graphically representing the attendance figures from 2010 to 2024
   </h3>
-  <p>This graph represents ratio of hospitalizations to attendees over the years.</p>
 
-  <svg width="550" height="500" style="border: 15px solid pink;" id="hospital">
+  <p>
+    We aim to assess the evolving popularity of the EDC Rave carnival over the past decade. Presented below is a visual
+    representation of the annual attendance figures for each respective year. The placement of the rectangular boxes
+    between each year signifies the event's occurrence in the middle of each calendar year. Our objective is to
+    ascertain whether the event has experienced a surge in popularity, maintained a consistent level of attendance, or
+    witnessed a decline in its appeal.
+  </p>
+
+  <svg width="1100" height="500" style="border: 25px solid pink; background: whitesmoke; display: block; margin: auto"
+    id="hospital1"></svg>
+
+  <p id="graph2">
+    <script>
+      //style="border: 1px solid black;"
+      const svg2 = d3.select("#hospital1");
+
+      const xScale1 = d3.scaleLinear().domain([2010, 2023]).range([80, 1000]);
+      const yScale1 = d3.scaleLinear().domain([0, 550000]).range([400, 80]);
+
+      const tempXScale1 = d3.scaleLinear().domain([0, 13]).range([80, 1000]);
+      const tempYScale1 = d3.scaleLinear().domain([0, 11]).range([400, 80]);
+
+      // Add x-axis label
+      svg2.append("text")
+        .attr("x", 550) // Adjust the x-coordinate to position the label
+        .attr("y", 450) // Adjust the y-coordinate to position the label
+        .style("text-anchor", "middle") // Center the text horizontally
+        .text("Year");
+
+      // Add y-axis label
+      svg2.append("text")
+        .attr("x", -250) // Adjust the x-coordinate and rotation angle to position the label
+        .attr("y", 20) // Adjust the y-coordinate to position the label
+        .attr("transform", "rotate(-90)") // Rotate the text 90 degrees counterclockwise
+        .style("text-anchor", "middle") // Center the text vertically
+        .text("Attendees");
+
+      const margins1 = { top: 10, right: 10, bottom: 50, left: 50 };
+      const chartWidth1 = 600 - margins1.left - margins1.right;
+      const chartHeight1 = 500 - margins1.top - margins1.bottom;
+
+      let leftAxis1 = d3.axisLeft(yScale1);
+      svg2.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', `translate(${margins1.left + 30},${margins1.top - 10})`)
+        .call(leftAxis1);
+
+      let bottomAxis1 = d3.axisBottom(xScale1);
+      svg2.append('g')
+        .attr('class', 'y axis')
+        .attr('transform', `translate(${margins1.left - 15},${chartHeight1 + margins1.top - 50})`)
+        .call(bottomAxis1);
+
+
+      d3.csv("hospitalization.csv", d3.autoType).then(data => {
+        console.log(data);
+        data.forEach(d => {
+          console.log(xScale1(d.year));
+          svg2.append("rect")
+            .attr("x", xScale1(d.year))
+            .attr("y", yScale1(d.attendees))
+            // .attr("r", 8)
+            .attr("width", 70)
+            .attr("height", 400 - yScale1(d.attendees))
+            .style("stroke", "Pink")
+            .style("stroke-width", 1)
+            .style("fill", "lightcoral");
+        })
+
+        for (let i = 0; i <= 11; i++) {
+          svg2.append("line")
+            .attr("x1", 80)
+            .attr("y1", tempYScale1(i))
+            .attr("x2", 1070)
+            .attr("y2", tempYScale1(i))
+            .attr("stroke", "deepskyblue");
+        }
+
+        for (let i = 0; i <= 14; i++) {
+          svg2.append("line")
+            .attr("x1", tempXScale1(i))
+            .attr("y1", 80)
+            .attr("x2", tempXScale1(i))
+            .attr("y2", 400)
+            .attr("stroke", "deepskyblue");
+        }
+
+      });
+
+
+    </script>
+  </p>
+
+  <h3>
+    Graph 2: Graphically representing the ratio of hospitalizations to attendes from 2010 to 2024.
+  </h3>
+  <p>We aim to showcase the ratio of hospitalizations at the EDC Rave carnival over the past decade.
+    As such we created a scatterplot to visually represent the ratio of hospitalizations to attendes from 2010 to 2024.
+    Our objective is to ascertain whether the event has experienced a surge in hospitalizations, maintained a consistent
+    level of hospitalizations, or witnessed a decline.
+  </p>
+
+  <svg width="550" height="500" style="border: 15px solid pink; display: block; margin: auto; background: whitesmoke"
+    id="hospital">
     <rect x="20" y="20" width="320" height="320" fill="none" stroke="none" />
   </svg>
 
@@ -41,7 +143,7 @@
           .attr("y1", tempYScale(i))
           .attr("x2", 500)
           .attr("y2", tempYScale(i))
-          .attr("stroke", "grey");
+          .attr("stroke", "deepskyblue");
       }
 
       for (let i = 0; i <= 13; i++) {
@@ -50,7 +152,7 @@
           .attr("y1", 80)
           .attr("x2", tempXScale(i))
           .attr("y2", 400)
-          .attr("stroke", "grey");
+          .attr("stroke", "deepskyblue");
       }
 
       // Add x-axis label
@@ -107,103 +209,16 @@
             .attr("cx", xScale(d.year))
             .attr("cy", yScale(d.hospitalizations / d.attendees))
             .attr("r", 8)
-            .attr("fill", "teal");
+            .attr("fill", "lightcoral");
         })
 
       });
     </script>
   </p>
 
-  <h3>
-    Graph 2
-  </h3>
+</body>
 
-  <p>This graph represents ratio of hospitalizations to attendees over the years.</p>
-
-  <svg width="582" height="500" style="border: 15px solid pink;" id="hospital1">
-    <rect x="20" y="20" width="320" height="320" fill="none" stroke="none" />
-  </svg>
-
-  <p id="graph2">
-    <script>
-      //style="border: 1px solid black;"
-      const svg2 = d3.select("#hospital1");
-
-      const xScale1 = d3.scaleLinear().domain([2010, 2024]).range([80, 532]);
-      const yScale1 = d3.scaleLinear().domain([0, 550000]).range([400, 80]);
-
-      const tempXScale1 = d3.scaleLinear().domain([0, 13]).range([80, 500]);
-      const tempYScale1 = d3.scaleLinear().domain([0, 11]).range([400, 80]);
-
-      for (let i = 0; i <= 11; i++) {
-        svg2.append("line")
-          .attr("x1", 80)
-          .attr("y1", tempYScale1(i))
-          .attr("x2", 532)
-          .attr("y2", tempYScale1(i))
-          .attr("stroke", "grey");
-      }
-
-      for (let i = 0; i <= 14; i++) {
-        svg2.append("line")
-          .attr("x1", tempXScale1(i))
-          .attr("y1", 80)
-          .attr("x2", tempXScale1(i))
-          .attr("y2", 400)
-          .attr("stroke", "grey");
-      }
-
-      // Add x-axis label
-      svg2.append("text")
-        .attr("x", 290) // Adjust the x-coordinate to position the label
-        .attr("y", 450) // Adjust the y-coordinate to position the label
-        .style("text-anchor", "middle") // Center the text horizontally
-        .text("Year");
-
-      // Add y-axis label
-      svg2.append("text")
-        .attr("x", -250) // Adjust the x-coordinate and rotation angle to position the label
-        .attr("y", 20) // Adjust the y-coordinate to position the label
-        .attr("transform", "rotate(-90)") // Rotate the text 90 degrees counterclockwise
-        .style("text-anchor", "middle") // Center the text vertically
-        .text("Attendees");
-
-      const margins1 = { top: 10, right: 10, bottom: 50, left: 50 };
-      const chartWidth1 = 600 - margins1.left - margins1.right;
-      const chartHeight1 = 500 - margins1.top - margins1.bottom;
-
-      let leftAxis1 = d3.axisLeft(yScale1);
-      svg2.append('g')
-        .attr('class', 'x axis')
-        .attr('transform', `translate(${margins1.left + 30},${margins1.top - 10})`)
-        .call(leftAxis1);
-
-      let bottomAxis1 = d3.axisBottom(xScale1);
-      svg2.append('g')
-        .attr('class', 'y axis')
-        .attr('transform', `translate(${margins1.left - 50},${chartHeight1 + margins1.top - 50})`)
-        .call(bottomAxis1);
-
-
-      d3.csv("hospitalization.csv", d3.autoType).then(data => {
-        console.log(data);
-        data.forEach(d => {
-          console.log(xScale1(d.year));
-          svg2.append("rect")
-            .attr("x", xScale1(d.year))
-            .attr("y", yScale1(d.attendees))
-            // .attr("r", 8)
-            .attr("width", 32.3)
-            .attr("height", 400 - yScale1(d.attendees))
-            .style("stroke", "Pink")
-            .style("stroke-width", 1)
-            .style("fill", "teal");
-        })
-
-      });
-    </script>
-  </p>
-
+</html>
 </body>
 
 
